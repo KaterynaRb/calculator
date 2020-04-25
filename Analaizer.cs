@@ -9,7 +9,7 @@ namespace AnalaizerClass
     {
         private static int MaxLength = 65536;
         private static int erposition = 0;
-        public static string expression;
+        public static string expression = "";
 
         public static bool ShowMessage = true;
 
@@ -60,14 +60,14 @@ namespace AnalaizerClass
                 }
                 if (parenthesesCount < 0)
                 {
-                    erposition = i + 1;
+                    erposition = i;
                     Global.lastError = String.Format("Error 01 at {0}: Wrong structure in parentheses, error on the {0} character", erposition);
                     return false;
                 }
             }
             if (parenthesesCount != 0)
             {
-                erposition = expression.Length - 1;
+                erposition = expression.Length;
                 Global.lastError = String.Format("Error 01 at {0}: Wrong structure in parentheses, error on the {0} character", erposition);
                 return false;
             }
@@ -84,21 +84,21 @@ namespace AnalaizerClass
                 {
                     ch = "mod";
                 }
-                else
+                else if (ch == "m")
                 {
-                    erposition = i - 1;
+                    erposition = i;
                     Global.lastError = String.Format("Error 02 at {0}: Wrong parameter on the {0} character", erposition);
                     return false;
                 }
                 if ((isLastOperator && IsOperator(ch)) || (isLastOperator && ch == ")"))
                 {
-                    erposition = i - 1;
+                    erposition = i;
                     Global.lastError = String.Format("Error 04 at {0}: Two operators on the {0} character", erposition);
                     return false;
                 }
                 if (IsOperator(ch) && (i == expression.Length - 1 || i == expression.Length - 3)) // помилка, якщо в кінці рядка оператор
                 {
-                    erposition = expression.Length - 1;
+                    erposition = expression.Length;
                     Global.lastError = String.Format("Error 05: Incomplete expression", erposition);
                     return false;
                 }
@@ -120,7 +120,7 @@ namespace AnalaizerClass
                 }
                 if (!(IsOperator(ch) || IsOperand(ch) || ch == ")" || ch == "("))
                 {
-                    erposition = i - 1;
+                    erposition = i;
                     Global.lastError = String.Format("Error 02 at {0}: Wrong parameter on the {0} character", erposition);
                     return expression;
                 }
