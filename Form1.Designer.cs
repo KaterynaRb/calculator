@@ -395,7 +395,6 @@
             this.textBox_Expression.TabIndex = 25;
             this.textBox_Expression.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.textBox_Expression.UseWaitCursor = true;
-            this.textBox_Expression.TextChanged += new System.EventHandler(this.textBox_Expression_TextChanged);
             // 
             // Form1
             // 

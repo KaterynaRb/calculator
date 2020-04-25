@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using CalcClass;
 using AnalaizerClass;
+using calculator;
 
 namespace calculator
 {
@@ -20,7 +21,7 @@ namespace calculator
             this.KeyPreview = true;
             this.KeyDown += Form1_KeyDown;
         }
- 
+        
         int EndResult = 0;
         int MemoryStore = 0;
 
@@ -73,18 +74,18 @@ namespace calculator
                     MemoryStore += EndResult;
                     return;
                 }
-                else textBox_Result.Text = "The value of result cannot be converted to a number";
+                else 
+                {
+                    Global.lastError = "The value of result cannot be converted to a number";
+                    textBox_Result.Text = Global.lastError;
+                }
             }
 
         }
 
-        private void textBox_Expression_TextChanged(object sender, EventArgs e)
-        {
-            Analaizer.expression = textBox_Expression.Text;
-        }
-
         private void button_Equals_Click(object sender, EventArgs e)
         {
+            Analaizer.expression = textBox_Expression.Text;
             /*Реалізувати щоб при натисненні на ENTER проводилось обчислення */
             textBox_Result.Text = Analaizer.Estimate();
         }
