@@ -9,7 +9,7 @@ namespace AnalaizerClass
     {
         private static int MaxLength = 65536;
         private static int erposition = 0;
-        public static string expression = "";
+        public static string expression;
 
         public static bool ShowMessage = true;
 
