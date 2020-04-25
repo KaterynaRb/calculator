@@ -9,7 +9,7 @@ namespace AnalaizerClass
     {
         private static int MaxLength = 65536;
         private static int erposition = 0;
-        public static string expression = "";
+        public static string expression;
 
         public static bool ShowMessage = true;
 
@@ -90,13 +90,13 @@ namespace AnalaizerClass
                     Global.lastError = String.Format("Error 02 at {0}: Wrong parameter on the {0} character", erposition);
                     return false;
                 }
-                if ((isLastOperator && IsOperator(ch)) || (isLastOperator && ch == ")"))
+                if ((IsOperator(ch) && (isLastOperator || ch == ")")))
                 {
                     erposition = i;
                     Global.lastError = String.Format("Error 04 at {0}: Two operators on the {0} character", erposition);
                     return false;
                 }
-                if (IsOperator(ch) && (i == expression.Length - 1 || i == expression.Length - 3)) // помилка, якщо в кінці рядка оператор
+                if ((IsOperator(ch) && i == expression.Length - 1) || (ch == "mod" && i == expression.Length - 3)) // помилка, якщо в кінці рядка оператор
                 {
                     erposition = expression.Length;
                     Global.lastError = String.Format("Error 05: Incomplete expression", erposition);
@@ -162,21 +162,13 @@ namespace AnalaizerClass
                 }
                 else if (IsOperator(x.ToString()))
                 {
-                    if (stack.Count > 0)
+                    while (stack.Count > 0 && Priority(x) <= Priority(stack.Peek().ToString()))
                     {
-                        while (Priority(x) <= Priority(stack.Peek().ToString()))
-                        {
-                            string y = stack.Pop().ToString();
-                            output.Add(y.ToString());
-                        }
-                        stack.Push(x);
-                        isLastNum = false;
+                        string y = stack.Pop().ToString();
+                        output.Add(y.ToString());
                     }
-                    else
-                    {
-                        stack.Push(x);
-                        isLastNum = false;
-                    }
+                    stack.Push(x);
+                    isLastNum = false;
                 }
                 else if(x == ")")
                 {
@@ -240,11 +232,7 @@ namespace AnalaizerClass
             list = CreateStack();
             for (int i = 0; i < list.Count; i++)
             {
-                if (IsOperand(list[i].ToString()))
-                {
-                    stack.Push(list[i]);
-                }
-                else if (IsOperator(list[i].ToString()))
+                if (IsOperator(list[i].ToString()))
                 {
                     string oper = (list[i].ToString());
                     long b = Convert.ToInt64(stack.Pop());
@@ -272,6 +260,7 @@ namespace AnalaizerClass
                         return Global.lastError;
                     }
                 }
+                else stack.Push(list[i]);
             }
             while (stack.Count > 0)
             {
@@ -282,21 +271,28 @@ namespace AnalaizerClass
 
         public static string Estimate() // Метод, який організовує обчислення
         {
-            if (CheckCurrency() && CheckOperators())
+            try
             {
-                string result = Format();
-                if (!String.IsNullOrEmpty(Global.lastError))
+                if (CheckCurrency() && CheckOperators())
                 {
-                    return Global.lastError;
+                    expression = Format();
+                    if (!String.IsNullOrEmpty(Global.lastError))
+                    {
+                        return Global.lastError;
+                    }
+                    expression = RunEstimate();
+                    if (!String.IsNullOrEmpty(Global.lastError))
+                    {
+                        return Global.lastError;
+                    }
+                    return expression;
                 }
-                result = RunEstimate();
-                if (!String.IsNullOrEmpty(Global.lastError))
-                {
-                    return Global.lastError;
-                }
-                return result;
+                else return Global.lastError;
             }
-            else return Global.lastError;
+            catch (Exception e)
+            {
+                return String.Format("Error 0: {0}", e.ToString());
+            }
         }
 
     }
