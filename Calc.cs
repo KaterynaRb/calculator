@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using calculator;
 
 
 
@@ -13,7 +14,6 @@ namespace CalcClass
     {
         public const int MININT = -2147483648;
         public const int MAXINT = 2147483647;
-        private static string _lastError = "";
         public static int Add(long a, long b)
         {
             int sum = Convert.ToInt32(a + b);
@@ -21,8 +21,7 @@ namespace CalcClass
                 return sum;
             else
             {
-                Console.WriteLine(_lastError);
-                return 06;
+                return 0;
             }
         }
 
@@ -33,8 +32,7 @@ namespace CalcClass
                 return sub;
             else
             {
-                Console.WriteLine(_lastError);
-                return 06;
+                return 0;
             }
         }
 
@@ -45,8 +43,7 @@ namespace CalcClass
                 return mult;
             else
             {
-                Console.WriteLine(_lastError);
-                return 06;
+                return 0;
             }
         }
 
@@ -54,8 +51,7 @@ namespace CalcClass
         {
             if (b == 0)
             {
-                _lastError = "Error 09:Failed to divide by 0";
-                Console.WriteLine(_lastError);
+                Global.lastError  = "Error 09: Failed to divide by 0";
                 return 09;
             }
             int div = Convert.ToInt32(a / b);
@@ -63,8 +59,7 @@ namespace CalcClass
                 return div;
             else
             {
-                Console.WriteLine(_lastError);
-                return 06;
+                return 0;
             }
         }
 
@@ -72,8 +67,7 @@ namespace CalcClass
         {
             if (b == 0)
             {
-                _lastError = "Error 09:Failed to divide by 0";
-                Console.WriteLine(_lastError);
+                Global.lastError = "Error 09: Failed to divide by 0";
                 return 09;
             }
             int mod = Convert.ToInt32(a % b);
@@ -81,8 +75,7 @@ namespace CalcClass
                 return mod;
             else
             {
-                Console.WriteLine(_lastError);
-                return 06;
+                return 0;
             }
         }
 
@@ -92,8 +85,7 @@ namespace CalcClass
                 return Convert.ToInt32(0 + a);
             else
             {
-                Console.WriteLine(_lastError);
-                return 06;
+                return 0;
             }
 
         }
@@ -104,8 +96,7 @@ namespace CalcClass
                 return Convert.ToInt32(0 - a);
             else
             {
-                Console.WriteLine(_lastError);
-                return 06;
+                return 0;
             }
         }
 
@@ -114,10 +105,9 @@ namespace CalcClass
             if (a >= MININT && a <= MAXINT) return true;
             else
             {
-                _lastError = " Error 06:value is very small or very large for int.";
+                Global.lastError = "Error 06: value is very small or very large for int";
                 return false;
             }
         }
-
     }
 }
