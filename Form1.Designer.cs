@@ -71,6 +71,7 @@
             this.button_Equals.TabIndex = 49;
             this.button_Equals.Text = "=";
             this.button_Equals.UseVisualStyleBackColor = true;
+            this.button_Equals.Click += new System.EventHandler(this.button_Equals_Click);
             // 
             // button_MC
             // 
@@ -81,6 +82,7 @@
             this.button_MC.TabIndex = 48;
             this.button_MC.Text = "MC";
             this.button_MC.UseVisualStyleBackColor = true;
+            this.button_MC.Click += new System.EventHandler(this.memoryDigit_Click);
             // 
             // button_MPlus
             // 
@@ -91,6 +93,7 @@
             this.button_MPlus.TabIndex = 47;
             this.button_MPlus.Text = "M+";
             this.button_MPlus.UseVisualStyleBackColor = true;
+            this.button_MPlus.Click += new System.EventHandler(this.memoryDigit_Click);
             // 
             // button_MR
             // 
@@ -101,6 +104,7 @@
             this.button_MR.TabIndex = 46;
             this.button_MR.Text = "MR";
             this.button_MR.UseVisualStyleBackColor = true;
+            this.button_MR.Click += new System.EventHandler(this.memoryDigit_Click);
             // 
             // button_Div
             // 
@@ -294,7 +298,7 @@
             this.groupBox_Editing.Controls.Add(this.button_Backspace);
             this.groupBox_Editing.Controls.Add(this.button_RBracket);
             this.groupBox_Editing.Controls.Add(this.button_LBracket);
-            this.groupBox_Editing.Location = new System.Drawing.Point(21, 114);
+            this.groupBox_Editing.Location = new System.Drawing.Point(21, 128);
             this.groupBox_Editing.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.groupBox_Editing.Name = "groupBox_Editing";
             this.groupBox_Editing.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
@@ -353,7 +357,7 @@
             // 
             this.label2.AutoSize = true;
             this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.label2.Location = new System.Drawing.Point(19, 62);
+            this.label2.Location = new System.Drawing.Point(26, 98);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(50, 18);
             this.label2.TabIndex = 28;
@@ -363,7 +367,7 @@
             // 
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.label1.Location = new System.Drawing.Point(19, 18);
+            this.label1.Location = new System.Drawing.Point(18, 31);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(82, 18);
             this.label1.TabIndex = 27;
@@ -371,31 +375,34 @@
             // 
             // textBox_Result
             // 
-            this.textBox_Result.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.textBox_Result.Location = new System.Drawing.Point(121, 58);
+            this.textBox_Result.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.textBox_Result.Location = new System.Drawing.Point(121, 82);
             this.textBox_Result.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.textBox_Result.Multiline = true;
             this.textBox_Result.Name = "textBox_Result";
-            this.textBox_Result.Size = new System.Drawing.Size(369, 26);
+            this.textBox_Result.Size = new System.Drawing.Size(367, 45);
             this.textBox_Result.TabIndex = 26;
             this.textBox_Result.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             // 
             // textBox_Expression
             // 
-            this.textBox_Expression.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.textBox_Expression.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.textBox_Expression.Location = new System.Drawing.Point(121, 18);
             this.textBox_Expression.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.textBox_Expression.Multiline = true;
             this.textBox_Expression.Name = "textBox_Expression";
-            this.textBox_Expression.Size = new System.Drawing.Size(369, 26);
+            this.textBox_Expression.Size = new System.Drawing.Size(369, 45);
             this.textBox_Expression.TabIndex = 25;
             this.textBox_Expression.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.textBox_Expression.UseWaitCursor = true;
-            this.textBox_Expression.Enter += new System.EventHandler(this.textBox_GotFocus);
+            this.textBox_Expression.TextChanged += new System.EventHandler(this.textBox_Expression_TextChanged);
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(499, 502);
+            this.Controls.Add(this.textBox_Expression);
             this.Controls.Add(this.button_Equals);
             this.Controls.Add(this.button_MC);
             this.Controls.Add(this.button_MPlus);
@@ -420,13 +427,13 @@
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.textBox_Result);
-            this.Controls.Add(this.textBox_Expression);
             this.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.MaximumSize = new System.Drawing.Size(517, 549);
             this.MinimumSize = new System.Drawing.Size(517, 549);
             this.Name = "Form1";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Form1";
+            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.Form1_KeyDown);
             this.groupBox_Editing.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
