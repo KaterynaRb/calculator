@@ -9,7 +9,7 @@ namespace AnalaizerClass
     {
         private static int MaxLength = 65536;
         private static int erposition = 0;
-        public static string expression;
+        public static string expression = "(1*(0-3)+1+2)";
 
         public static bool ShowMessage = true;
 
@@ -20,11 +20,7 @@ namespace AnalaizerClass
 
         static bool IsOperand(string c)
         {
-            if (c.Length > 1)
-            {
-                return false;
-            }
-            return (char.Parse(c) >= '0' && char.Parse(c) <= '9');
+            return (c.Length == 1 && (char.Parse(c) >= '0' && char.Parse(c) <= '9'));
         }
 
         public static bool CheckCurrency() // перевіряє дужки, довжину виразу і перший символ 
@@ -60,40 +56,37 @@ namespace AnalaizerClass
                 }
                 if (parenthesesCount < 0)
                 {
-                    erposition = i;
+                    erposition = i + 1;
                     Global.lastError = String.Format("Error 01 at {0}: Wrong structure in parentheses, error on the {0} character", erposition);
                     return false;
                 }
             }
             if (parenthesesCount != 0)
             {
-                erposition = expression.Length;
-                Global.lastError = String.Format("Error 01 at {0}: Wrong structure in parentheses, error on the {0} character", erposition);
+                Global.lastError = "Error 01: Wrong structure in parentheses";
                 return false;
             }
             return true;
         }
 
-        public static bool CheckOperators() // перевіряє оператори (не може бути 2 поряд, перед закриваючою дужкою і останній)
+        public static bool CheckOperators() // перевіряє оператори (не може бути 2 поряд, перед закриваючою дужкою, після відкриваючої і останній)
         {
             bool isLastOperator = false;
+
             for (int i = 0; i < expression.Length; i++)
             {
                 string ch = expression[i].ToString();
                 if(ch == "m" && i < expression.Length - 2 && expression[i+1]=='o' && expression[i+2]=='d')
                 {
                     ch = "mod";
+                    i += 2;
                 }
-                else if (ch == "m")
+                if ((i > 0 && ch == "(" && IsOperand(expression[i - 1].ToString())) 
+                    || (i < expression.Length - 1 && ch == ")" && IsOperand(expression[i + 1].ToString()))
+                    || (isLastOperator && (ch == ")" || IsOperator(ch))))
                 {
-                    erposition = i;
-                    Global.lastError = String.Format("Error 02 at {0}: Wrong parameter on the {0} character", erposition);
-                    return false;
-                }
-                if ((IsOperator(ch) && (isLastOperator || ch == ")")))
-                {
-                    erposition = i;
-                    Global.lastError = String.Format("Error 04 at {0}: Two operators on the {0} character", erposition);
+                    erposition = i + 1;
+                    Global.lastError = String.Format("Error 04 at {0}: Two operators or missing some operator on the {0} character", erposition);
                     return false;
                 }
                 if ((IsOperator(ch) && i == expression.Length - 1) || (ch == "mod" && i == expression.Length - 3)) // помилка, якщо в кінці рядка оператор
@@ -102,7 +95,7 @@ namespace AnalaizerClass
                     Global.lastError = String.Format("Error 05: Incomplete expression", erposition);
                     return false;
                 }
-                isLastOperator = IsOperator(ch);
+                isLastOperator = (IsOperator(ch) || ch == "(");
             }
             return true;
         }
@@ -117,10 +110,11 @@ namespace AnalaizerClass
                 if (ch == "m" && i < expression.Length - 2 && expression[i + 1] == 'o' && expression[i + 2] == 'd')
                 {
                     ch = "mod";
+                    i += 2;
                 }
                 if (!(IsOperator(ch) || IsOperand(ch) || ch == ")" || ch == "("))
                 {
-                    erposition = i;
+                    erposition = i + 1;
                     Global.lastError = String.Format("Error 02 at {0}: Wrong parameter on the {0} character", erposition);
                     return expression;
                 }
@@ -141,7 +135,7 @@ namespace AnalaizerClass
                 {
                     x = "mod";
                 }
-                else if (x == "(")
+                if (x == "(")
                 {
                     stack.Push(x);
                     isLastNum = false;
@@ -178,16 +172,6 @@ namespace AnalaizerClass
                         output.Add(y.ToString());
                     }
                     stack.Pop();
-                    if (stack.Count != 0)
-                    {
-                        string next = stack.Peek().ToString();
-                        if (IsOperator(next))
-                        {
-                            string y = stack.Pop().ToString();
-                            output.Add(y.ToString());
-                            i++;
-                        }
-                    }
                     isLastNum = false;
                 }
                 if ((stack.Count + output.Count) > 30) // Максимальне сумарне число операторів і чисел – 30
@@ -273,6 +257,10 @@ namespace AnalaizerClass
         {
             try
             {
+                if (!String.IsNullOrEmpty(Global.lastError))
+                {
+                    Global.lastError = "";
+                }
                 if (CheckCurrency() && CheckOperators())
                 {
                     expression = Format();
@@ -294,6 +282,5 @@ namespace AnalaizerClass
                 return String.Format("Error 0: {0}", e.ToString());
             }
         }
-
     }
 }
