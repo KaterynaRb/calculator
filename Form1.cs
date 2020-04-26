@@ -10,6 +10,7 @@ using System.Windows.Forms;
 using CalcClass;
 using AnalaizerClass;
 using calculator;
+using System.Text.RegularExpressions;
 
 namespace calculator
 {
@@ -86,7 +87,6 @@ namespace calculator
         private void button_Equals_Click(object sender, EventArgs e)
         {
             Analaizer.expression = textBox_Expression.Text;
-            /*Реалізувати щоб при натисненні на ENTER проводилось обчислення */
             textBox_Result.Text = Analaizer.Estimate();
         }
 
@@ -96,6 +96,31 @@ namespace calculator
             {
                 ((Form1)sender).Close();
             }
+        }
+
+        private void button_ABS_IABS_Click(object sender, EventArgs e)
+        {
+            Regex reg = new Regex(@"\+\d+|-[0-9]+|[0-9]$"); 
+            string lastNumber = reg.Match(textBox_Expression.Text).Value;
+            int n;
+            if (int.TryParse(textBox_Expression.Text, out n)) //якщо введено одне число
+            {
+                if (Convert.ToInt32(textBox_Expression.Text) > 0)
+                    textBox_Expression.Text = Convert.ToString(Calc.IABS(Convert.ToInt32(textBox_Expression.Text)));
+                else if (Convert.ToInt32(textBox_Expression.Text) < 0)
+                    textBox_Expression.Text = Convert.ToString(Calc.IABS(Convert.ToInt32(textBox_Expression.Text)));
+            }
+            else
+            {
+                if (Convert.ToInt32(lastNumber) > 0)
+                    textBox_Expression.Text = textBox_Expression.Text.Replace(lastNumber, Convert.ToString(Calc.IABS(Convert.ToInt32(lastNumber))));
+                else if (Convert.ToInt32(lastNumber) < 0)
+                {
+                    string replaceSign = lastNumber.Replace("-", "+");
+                    textBox_Expression.Text = textBox_Expression.Text.Replace(lastNumber, replaceSign);
+                }
+            }
+            
         }
     }
 }
