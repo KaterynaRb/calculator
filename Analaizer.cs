@@ -9,7 +9,7 @@ namespace AnalaizerClass
     {
         private static int MaxLength = 65536;
         private static int erposition = 0;
-        public static string expression = "(1*(0-3)+1+2)";
+        public static string expression;
 
         public static bool ShowMessage = true;
 
@@ -23,7 +23,7 @@ namespace AnalaizerClass
             return (c.Length == 1 && (char.Parse(c) >= '0' && char.Parse(c) <= '9'));
         }
 
-        public static bool CheckCurrency() // перевіряє дужки, довжину виразу і перший символ 
+        public static bool CheckCurrency() // Перевіряє дужки, довжину виразу і перший символ 
         {
             if (expression.Length > MaxLength)
             {
@@ -32,7 +32,7 @@ namespace AnalaizerClass
             }
 
             string firstElement = "0123456789-(";
-            if (!firstElement.Contains(expression[0].ToString())) // перевіряє перший символ
+            if (!firstElement.Contains(expression[0].ToString())) // Перевірка першого символу
             {
                 erposition = 1;
                 Global.lastError = String.Format("Error 02 at {0}: Wrong parameter on the {0} character", erposition);
@@ -40,7 +40,7 @@ namespace AnalaizerClass
             }
 
             int parenthesesCount = 0;
-            for (int i = 0; i < expression.Length; i++) // рахує дужки
+            for (int i = 0; i < expression.Length; i++) // Перевірка дужок
             {
                 char ch = expression[i];
                 switch (ch)
@@ -54,7 +54,7 @@ namespace AnalaizerClass
                     default:
                         break;
                 }
-                if (parenthesesCount < 0)
+                if (parenthesesCount < 0 || parenthesesCount > 3) // Глибина вкладеності структури в дужках > 3
                 {
                     erposition = i + 1;
                     Global.lastError = String.Format("Error 01 at {0}: Wrong structure in parentheses, error on the {0} character", erposition);
@@ -69,7 +69,7 @@ namespace AnalaizerClass
             return true;
         }
 
-        public static bool CheckOperators() // перевіряє оператори (не може бути 2 поряд, перед закриваючою дужкою, після відкриваючої і останній)
+        public static bool CheckOperators() // Перевірка операторів (не може бути 2 поряд, перед закриваючою дужкою, після відкриваючої і останній)
         {
             bool isLastOperator = false;
 
@@ -100,9 +100,9 @@ namespace AnalaizerClass
             return true;
         }
 
-        public static string Format() // має шукати нерозпізнані оператори і видаляти пробіли
+        public static string Format() // Знаходження нерозпізнаних операторів і видалення пробілів
         {
-            expression = expression.Replace(" ", string.Empty); // видаляє пробіли
+            expression = expression.Replace(" ", string.Empty);
 
             for (int i = 0; i < expression.Length; i++)
             {
@@ -122,7 +122,7 @@ namespace AnalaizerClass
             return expression;
         }
 
-        public static ArrayList CreateStack()
+        public static ArrayList CreateStack() // Переведення виразу до зворотнього польського запису
         {
             ArrayList output = new ArrayList();
             Stack stack = new Stack();
